@@ -1,8 +1,7 @@
 package scm.nqkwey.miner
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import scm.nqkwey.ci_miner.R
+import android.support.v7.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
