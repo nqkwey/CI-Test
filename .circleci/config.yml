@@ -1,4 +1,10 @@
 version: 2
+machine:
+  environment:
+    PATH: "~/$CIRCLE_PROJECT_REPONAME/gradle-2.9/bin:$PATH"
+    TERM: "dumb"
+    ADB_INSTALL_TIMEOUT: "10"
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 jobs:
   build:
     working_directory: ~/code
@@ -31,6 +37,8 @@ jobs:
           name: Waiting for emulator
           command: |
               circle-android wait-for-boot
+              # unlock the emulator screen
+              - sleep 30
               adb shell input keyevent 82
       - run:
           name: Run UI tests
