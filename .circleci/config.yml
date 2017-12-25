@@ -35,8 +35,8 @@ jobs:
           background: true
       - run:
           name: Waiting for emulator
-          command: |
-              circle-android wait-for-boot
+          command:
+          circle-android wait-for-boot
               - sleep 30
               adb shell input keyevent 82
       - run:
