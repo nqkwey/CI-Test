@@ -2,7 +2,7 @@ version: 2
 machine:
   environment:
     TERM: "dumb"
-    ADB_INSTALL_TIMEOUT: "10"
+    ADB_INSTALL_TIMEOUT: "10000"
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 jobs:
   build:
