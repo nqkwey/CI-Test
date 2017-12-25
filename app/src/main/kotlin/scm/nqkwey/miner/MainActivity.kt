@@ -16,10 +16,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        textView.setOnClickListener { requestNewExchanges() }
     }
 
     override fun onResume() {
         super.onResume()
+        requestNewExchanges()
+    }
+
+    private fun requestNewExchanges() {
         exchangeObservable(EasyCurrency.BTC, EasyCurrency.RUB).subscribe({
             onUiThread(Runnable {
                 val text = "1 BTC = ${it.toAmount.roundToInt()} ${it.toCurrency}"
