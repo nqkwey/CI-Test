@@ -36,12 +36,12 @@ jobs:
           name: Waiting for emulator
           command:
               circle-android wait-for-boot
-              - sleep 30
+              - sleep 120
               adb shell input keyevent 82
       - run:
           name: Run UI tests
           command: ./gradlew :app:connectedAndroidTest
-          timeout: 600000
+          timeout: 720
       - store_artifacts:
           path: app/build/reports
           destination: reports
