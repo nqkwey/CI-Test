@@ -11,11 +11,16 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.3.3'
         classpath "com.newtronlabs.android:plugin:1.1.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'io.github.robwin:jgitflow-gradle-plugin:0.6.0'
+
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
+
+apply plugin: 'io.github.robwin.jgitflow'
+
 
 allprojects {
     repositories {
