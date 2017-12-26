@@ -7,6 +7,7 @@ import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import com.newtronlabs.easyexchange.EasyCurrency
 import org.hamcrest.core.StringContains
 import org.junit.Rule
 import org.junit.Test
@@ -34,6 +35,13 @@ class ApplicationTest {
     fun testCurrency() {
         Thread.sleep(5000)
         onView(withId(R.id.textView))
-                .check(ViewAssertions.matches(withText(StringContains.containsString("RUB"))))
+                .check(ViewAssertions.matches(withText(StringContains.containsString(EasyCurrency.RUB.key))))
+    }
+
+    @Test
+    fun testUSDCurrency() {
+        Thread.sleep(10000)
+        onView(withId(R.id.textView))
+                .check(ViewAssertions.matches(withText(StringContains.containsString(EasyCurrency.USD.key))))
     }
 }

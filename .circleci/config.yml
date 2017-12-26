@@ -43,3 +43,7 @@ jobs:
           destination: reports
       - store_test_results:
           path: app/build/test-results
+      - beta:
+          branch: develop
+            commands:
+              - ./gradlew release --console=plain
