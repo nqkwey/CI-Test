@@ -25,14 +25,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestNewExchanges() {
-        exchangeObservable(EasyCurrency.BTC, EasyCurrency.RUB).subscribe({
-            onUiThread(Runnable {
-                val text = "1 BTC = ${it.toAmount.roundToInt()} ${it.toCurrency}"
-                textView.text = text
-            })
-        }, {
-            onUiThread(Runnable { Toast.makeText(this@MainActivity, "Finished with the error: ${it.message}", Toast.LENGTH_SHORT).show()})
-        })
+        exchangeObservable(EasyCurrency.BTC, EasyCurrency.RUB)
+                .subscribe({
+                    val roublesAmount = it.toAmount.roundToInt()
+                    val text = "1 BTC = $roublesAmount ${it.toCurrency}"
+                    exchangeObservable(EasyCurrency.RUB, EasyCurrency.USD)
+                            .subscribe({
+                                val newText = textView.text.toString() + "\nAND ${(roublesAmount * it.toAmount).roundToInt()} ${it.toCurrency}"
+                                onUiThread(Runnable {
+                                    textView.text = newText
+                                })
+                            }, { handleError(it) })
+                    onUiThread(Runnable { textView.text = text })
+                }, { onUiThread(Runnable { handleError(it) }) })
+    }
+
+    private fun handleError(t: Throwable) {
+        Toast.makeText(this@MainActivity, "Finished with the error: ${t.message}", Toast.LENGTH_SHORT).show()
     }
 
     private fun onUiThread(runnable: Runnable) {
