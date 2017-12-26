@@ -35,9 +35,9 @@ jobs:
           command: |
               circle-android wait-for-boot
               adb shell input keyevent 82
-      - run:
-          name: Run UI tests
-          command: ./gradlew :app:connectedAndroidTest
+      #- run:
+      #    name: Run UI tests
+      #    command: ./gradlew :app:connectedAndroidTest
       - run:
           name: Upload Beta
           command: ./gradlew release
