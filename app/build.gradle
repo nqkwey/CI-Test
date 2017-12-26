@@ -25,11 +25,21 @@ android {
 
     }
 
+    signingConfigs {
+        release {
+            storeFile rootProject.file("release.jks")
+            storePassword "ciminer"
+            keyAlias "ci"
+            keyPassword "ciminer"
+        }
+    }
+
     buildTypes {
-        ext.betaDistributionEmails = projectEmail
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            ext.betaDistributionEmails = projectEmail
         }
     }
 

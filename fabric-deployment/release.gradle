@@ -41,6 +41,6 @@ task release {
 
 afterEvaluate {
     crashlyticsUploadDistributionRelease.dependsOn assembleRelease
-    crashlyticsUploadDistributionRelease.mustRunAfter commitVersionIncrementChanges
-    release.dependsOn(["commitVersionIncrementChanges", "crashlyticsUploadDistributionRelease"])
+    //crashlyticsUploadDistributionRelease.mustRunAfter commitVersionIncrementChanges
+    release.dependsOn(["incrementVersionCode", "crashlyticsUploadDistributionRelease"])
 }
