@@ -32,6 +32,7 @@ task commitVersionIncrementChanges(type:Exec) {
             "git add fabric-deployment/release.properties && " +
             "git commit -am \"app: version code bump to release [skip ci]\" && " +
             "git push"
+
     dependsOn incrementVersionCode
 }
 
