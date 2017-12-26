@@ -27,8 +27,8 @@ task commitVersionIncrementChanges(type:Exec) {
     executable "sh"
     group "release"
     args "-c",
-            "git config user.email \"ppgsalomao@gmail.com\" && " +
-            "git config user.name \"Pedro Salomão\" && " +
+            "git config user.email \"enagibin@gmail.com\" && " +
+            "git config user.name \"nqkwey\" && " +
             "git add fabric-deployment/release.properties && " +
             "git commit -am \"app: version code bump to release [skip ci]\" && " +
             "git push"
