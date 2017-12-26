@@ -3,18 +3,23 @@ package scm.nqkwey.miner
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 import com.newtronlabs.easyexchange.EasyCurrency
 import com.newtronlabs.easyexchange.EasyExchangeManager
 import com.newtronlabs.easyexchange.ICurrencyExchange
 import com.newtronlabs.easyexchange.ICurrencyExchangeCallback
+import io.fabric.sdk.android.Fabric
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.roundToInt
+
+
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_main)
         textView.setOnClickListener { requestNewExchanges() }
     }
