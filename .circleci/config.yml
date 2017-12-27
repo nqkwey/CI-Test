@@ -11,6 +11,7 @@ jobs:
     branches:
        only:
         - master
+        - /release.*/
     steps:
       - checkout
       - restore_cache:
