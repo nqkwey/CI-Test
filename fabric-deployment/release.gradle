@@ -1,0 +1,48 @@
+def releasePropertiesFile = { rootProject.file('fabric-deployment/release.properties') }
+
+ext.loadVersionCode = {
+    Properties props = new Properties()
+    props.load(releasePropertiesFile().newDataInputStream())
+    props.getProperty('versionCode').toInteger()
+}
+
+ext.loadEmail = {
+    Properties props = new Properties()
+    props.load(releasePropertiesFile().newDataInputStream())
+    props.getProperty('email').toString()
+}
+
+task incrementVersionCode {
+    doLast {
+        Properties props = new Properties()
+        File propsFile = releasePropertiesFile()
+        props.load(propsFile.newDataInputStream())
+        props.setProperty('versionCode', (props.getProperty('versionCode').toInteger() + 1).toString())
+        props.store(propsFile.newWriter(), null)
+    }
+}
+
+task commitVersionIncrementChanges(type:Exec) {
+    workingDir '../'
+    executable "sh"
+    group "release"
+    args "-c",
+            "git config user.email \"enagibin@gmail.com\" && " +
+            "git config user.name \"nqkwey\" && " +
+            "git add fabric-deployment/release.properties && " +
+            "git commit -am \"app: version code bump to release [skip ci]\" && " +
+            "git push"
+
+    dependsOn incrementVersionCode
+}
+
+task release {
+    group "release"
+}
+
+afterEvaluate {
+    crashlyticsUploadDistributionRelease.dependsOn assembleRelease
+    crashlyticsUploadDistributionRelease.mustRunAfter commitVersionIncrementChanges
+
+    release.dependsOn(["commitVersionIncrementChanges", "crashlyticsUploadDistributionRelease"])
+}
