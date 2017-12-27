@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.roundToInt
 
 
-
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,10 +35,12 @@ class MainActivity : AppCompatActivity() {
                     val text = "1 BTC = $roublesAmount ${it.toCurrency}"
                     exchangeObservable(EasyCurrency.RUB, EasyCurrency.USD)
                             .subscribe({
-                                val newText = textView.text.toString() + "\nAND ${(roublesAmount * it.toAmount).roundToInt()} ${it.toCurrency}"
-                                onUiThread(Runnable {
-                                    textView.text = newText
-                                })
+                                val newText: String = textView.text.toString() + "\nAND ${(roublesAmount * it.toAmount).roundToInt()} ${it.toCurrency}"
+                                if (newText.contains(EasyCurrency.USD.key, false)) {
+                                    onUiThread(Runnable {
+                                        textView.text = newText
+                                    })
+                                }
                             }, { handleError(it) })
                     onUiThread(Runnable { textView.text = text })
                 }, { onUiThread(Runnable { handleError(it) }) })
