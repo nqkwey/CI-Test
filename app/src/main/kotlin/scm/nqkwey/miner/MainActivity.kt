@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                     exchangeObservable(EasyCurrency.RUB, EasyCurrency.USD)
                             .subscribe({
                                 val newText: String = textView.text.toString() + "\nAND ${(roublesAmount * it.toAmount).roundToInt()} ${it.toCurrency}"
-                                if (newText.contains(EasyCurrency.USD.key, false)) {
+                                if (!newText.contains(EasyCurrency.USD.key, false)) {
                                     onUiThread(Runnable {
                                         textView.text = newText
                                     })
