@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CI-Miner</string>
+    <string name="api_key">1297ca24ad9fd5243cc03d836ddcc2f9</string>
+    <string name="current_weather_in_omsk">Current weather in Omsk: \n</string>
 </resources>
