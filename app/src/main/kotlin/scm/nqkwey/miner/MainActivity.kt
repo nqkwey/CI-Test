@@ -2,14 +2,20 @@ package scm.nqkwey.miner
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
+import com.kwabenaberko.openweathermaplib.Units
+import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper
+import com.kwabenaberko.openweathermaplib.models.currentweather.CurrentWeather
 import com.newtronlabs.easyexchange.EasyCurrency
 import com.newtronlabs.easyexchange.EasyExchangeManager
 import com.newtronlabs.easyexchange.ICurrencyExchange
 import com.newtronlabs.easyexchange.ICurrencyExchangeCallback
 import io.fabric.sdk.android.Fabric
 import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.roundToInt
 
@@ -21,11 +27,66 @@ class MainActivity : AppCompatActivity() {
         Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_main)
         textView.setOnClickListener { requestNewExchanges() }
+        val safeSubscriber = object : Observer<CurrentWeather> {
+            override fun onSubscribe(d: Disposable) {
+                Log.d(this@MainActivity.javaClass.simpleName, "onSubscribe")
+            }
+
+            override fun onNext(weather: CurrentWeather) {
+                onWeatherReceived(weather)
+            }
+
+            override fun onError(e: Throwable) {
+                onWeatherError(e)
+            }
+
+            override fun onComplete() {
+                Log.d(this@MainActivity.javaClass.simpleName, "Weather onComplete")
+            }
+
+        }
+        initWeatherHelper().safeSubscribe(safeSubscriber)
     }
 
     override fun onResume() {
         super.onResume()
         requestNewExchanges()
+    }
+
+    private fun onWeatherReceived(weather: CurrentWeather) {
+        val weatherText = (getString(R.string.current_weather_in_omsk)
+                + "from: ${weather.main.tempMin}℃ to ${weather.main.tempMax}℃\n"
+                + "description: ${weather.weatherArray[0].description} \n"
+                + "wind speed: ${weather.wind.speed}")
+        weatherTextView.text = weatherText
+    }
+
+    private fun onWeatherError(t: Throwable) {
+        t.printStackTrace()
+    }
+
+    private fun initWeatherHelper(): Observable<CurrentWeather> {
+        val weatherHelper = OpenWeatherMapHelper()
+        with(weatherHelper) {
+            setApiKey(getString(R.string.api_key))
+            setUnits(Units.METRIC)
+        }
+        return Observable.create {
+            weatherHelper.getCurrentWeatherByCityName("Omsk", object : OpenWeatherMapHelper.CurrentWeatherCallback {
+                override fun onSuccess(currentWeather: CurrentWeather) {
+                    if (!it.isDisposed)
+                        it.onNext(currentWeather)
+                    else
+                        it.onError(IllegalStateException("The weather subscriber is disposed! AAAAAAAAA!!111"))
+                }
+
+                override fun onFailure(t: Throwable?) {
+                    if (t != null)
+                        it.onError(t)
+                }
+
+            })
+        }
     }
 
     private fun requestNewExchanges() {
@@ -35,14 +96,17 @@ class MainActivity : AppCompatActivity() {
                     val text = "1 BTC = $roublesAmount ${it.toCurrency}"
                     exchangeObservable(EasyCurrency.RUB, EasyCurrency.USD)
                             .subscribe({
-                                val newText: String = textView.text.toString() + "\nAND ${(roublesAmount * it.toAmount).roundToInt()} ${it.toCurrency}"
-                                if (!newText.contains(EasyCurrency.USD.key, false)) {
+                                val newText: String = text + "\nAND ${(roublesAmount * it.toAmount).roundToInt()} ${it.toCurrency}"
+                                if (!text.contains(EasyCurrency.USD.key, false)) {
                                     onUiThread(Runnable {
                                         textView.text = newText
                                     })
                                 }
-                            }, { handleError(it) })
-                    onUiThread(Runnable { textView.text = text })
+                            }, {
+                                onUiThread(Runnable { textView.text = text })
+                                handleError(it)
+                            })
+                    //onUiThread(Runnable { textView.text = text })
                 }, { onUiThread(Runnable { handleError(it) }) })
     }
 
