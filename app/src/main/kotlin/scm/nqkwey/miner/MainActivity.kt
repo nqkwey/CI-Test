@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_main)
         textView.setOnClickListener { requestNewExchanges() }
+
         val safeSubscriber = object : Observer<CurrentWeather> {
             override fun onSubscribe(d: Disposable) {
                 Log.d(this@MainActivity.javaClass.simpleName, "onSubscribe")
